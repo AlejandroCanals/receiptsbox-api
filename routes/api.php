@@ -3,6 +3,8 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\ReceiptController;
+
 
 Route::prefix('v1')->group(function(){
     Route::post('auth/register',[AuthController::class, 'register']);
@@ -13,5 +15,11 @@ Route::prefix('v1')->group(function(){
             return $request->user();
         });
         Route::post('auth/logout',[AuthController::class,'logout']);
+
+        //Receipts
+        Route::apiResource('receipts', ReceiptController::class);
+
+
+
     });
 });
