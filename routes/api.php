@@ -19,7 +19,5 @@ Route::prefix('v1')->group(function(){
         //Receipts
         Route::apiResource('receipts', ReceiptController::class);
 
-
-
     });
 });

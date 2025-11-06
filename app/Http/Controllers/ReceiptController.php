@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 
 class ReceiptController extends Controller
 {
+    // TODO --> Validation -->formrequest classes
+
     public function __construct()
     {
         $this->authorizeResource(Receipt::class, 'receipt');
@@ -39,16 +41,23 @@ class ReceiptController extends Controller
      */
     public function store(Request $request)
     {
-        // Only store the image path for now; the OCR process will extract the rest later.
         $data = validator($request->all(),[
-            'image_path' => ['required','string','max:255'],
+            'image' => ['required', 'image', 'max:4096'],
         ])->validate();
 
-        $receipt = $request->user()->receipts()->create($data);
+        $user = $request->user();
+        $path = $request->file('image')->store('receipts','public');
 
+        $receipt = $user->receipts()->create([
+            'image_path' => $path,
+            'status' => 'pending'
+        ]);
+
+        dispatch(new \App\Jobs\ProcessReceiptImageJob($receipt));
+        
         return response()->json([
             'status' => 'success',
-            'message' => 'The receipt has been created successfully',
+            'message' => 'Receipt uploaded successfully. OCR processing started.',
             'data' => $receipt
         ],201);
     }
