@@ -3,6 +3,7 @@
 namespace App\Jobs;
 
 use App\Models\Receipt;
+use App\Services\OcrService;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -10,6 +11,7 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Log;
 use Google\Cloud\Vision\V1\ImageAnnotatorClient;
+
 use Throwable;
 
 class ProcessReceiptImageJob implements ShouldQueue
@@ -25,10 +27,11 @@ class ProcessReceiptImageJob implements ShouldQueue
         $this->receipt = $receipt;
     }
 
-    public function handle(): void
+    public function handle(OcrService $ocr): void
     {
-        $imagePath = storage_path('app/public/' . $this->receipt->image_path);
 
+
+        /*
         try {
             // Inicializar cliente Google Vision
             $imageAnnotator = new ImageAnnotatorClient([
@@ -78,7 +81,7 @@ class ProcessReceiptImageJob implements ShouldQueue
             
             $this->receipt->update(['status' => 'failed']);
             throw $e;
-        }
+        }*/
     }
 
     /**
